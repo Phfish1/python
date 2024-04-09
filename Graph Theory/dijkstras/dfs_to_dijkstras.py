@@ -20,34 +20,35 @@ matrix = [
 [ 45, 344, 622, 627, 349, 184, 802, 400, 701, 550 ]
 ]
 
-def draw_maze(maze, row, column, path):
+def draw_maze(maze, row, column, path, realtime):
     maze_string = ""
 
     for i in range(0, len(maze)):
         for j in range(0, len(maze[i])):
-            if ( (row == len(maze)-1 and column == len(maze[0])-1) and (i == len(maze)-1 and j == len(maze[0])-1) ) :
+            if ( (row == len(maze)-1 and column == len(maze[0])-1) and (i == len(maze)-1 and j == len(maze[0])-1) ):
                 maze_string += f"\033[92m{maze[i][j]}\033[00m, "
+            elif i == 0 and j == 0:
+                maze_string += f"\033[92m{maze[0][0]}\033[00m, " # Marks the starting point 
             elif (row == i and column == j):
                 maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks current Vertex
             elif [i, j] in path:
-                maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks already visited vertexes, [IN current path] "See explored_paths.pop()" in dfs()
-            elif i == 0 and j == 0:
-                maze_string += f"\033[92m{maze[0][0]}\033[00m, " # Marks the starting point 
+                if (i == len(maze[row])-1 and j == len(maze[column])-1):
+                    maze_string += f"\033[92m{maze[i][j]}\033[00m, "
+                else:
+                    maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks already visited vertexes, [IN current path] "See explored_paths.pop()" in dfs()
             else:
                 maze_string += f"{maze[i][j]}, "
 
         maze_string += f"\n"
     
-
-    #print(f"{maze_string}", end='\r')
-    #sleep(0.000000001)
-    #for line in maze_string.splitlines():
-    #    print("\033[1A", end="\x1b[2K")
-
-    
-    #sleep(0.2)
-    print(f"{maze_string}")
-    print("---------------------")
+    if realtime:
+        print(f"{maze_string}", end='\r')
+        sleep(0.000000001)
+        for line in maze_string.splitlines():
+            print("\033[1A", end="\x1b[2K")
+    else:
+        print(f"{maze_string}")
+        print("---------------------")
 
 def find_neighbours(graph, row, column):
     ### Checks if index exists
@@ -87,7 +88,7 @@ def dijkstras(graph, row, column): ### Row + Collumn representing the vertex
         current_cost += graph[current_path[-1][0]][current_path[-1][1]]
 
 
-        #draw_maze(graph, path[0], path[1], current_path)
+        #draw_maze(graph, path[0], path[1], current_path, True)
 
         if current_cost > shortest_path["cost"]:
             current_cost -= graph[current_path[-1][0]][current_path[-1][1]]
@@ -118,5 +119,5 @@ current_cost = matrix[0][0]
 
 result = dijkstras(matrix, 0, 0)
 
-draw_maze(matrix, 0, 0, result["path"])
+draw_maze(matrix, 0, 0, result["path"], False)
 print(result)

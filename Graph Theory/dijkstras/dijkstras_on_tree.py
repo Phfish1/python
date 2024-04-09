@@ -19,14 +19,17 @@ def draw_maze(maze, row, column, path, fast):
 
     for i in range(0, len(maze)):
         for j in range(0, len(maze[i])):
-            if ( row == len(maze)-1 and i == row and j == column):
+            if ( (i == len(maze)-1 and j == column) and (row == len(maze)-1 and column) ):
                 maze_string += f"\033[92m{maze[i][j]}\033[00m, "
+            elif i == 0 and j == 0:
+                maze_string += f"\033[92m{maze[0][0]}\033[00m, " # Marks the starting point 
             elif (row == i and column == j):
                 maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks current Vertex
             elif [i, j] in path:
-                maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks already visited vertexes, [IN current path] "See explored_paths.pop()" in dfs()
-            elif i == 0 and j == 0:
-                maze_string += f"\033[92m{maze[0][0]}\033[00m, " # Marks the starting point 
+                if (i == len(maze)-1 and j == column):
+                    maze_string += f"\033[92m{maze[i][j]}\033[00m, "
+                else:
+                    maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks already visited vertexes, [IN current path] "See explored_paths.pop()" in dfs()
             else:
                 maze_string += f"{maze[i][j]}, "
 
