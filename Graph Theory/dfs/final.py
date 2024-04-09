@@ -31,7 +31,7 @@ def draw_maze(maze, row, column):
 
         maze_string += f"\n"
     
-    sleep(0.1)
+    sleep(0.2)
     print(f"\r{maze_string}")
     print("------------------------------",)
 
@@ -68,7 +68,7 @@ def find_neighbours(graph, row, column):
     return valid_paths
 
 def dfs(graph, row, column): ### Row + Collumn representing the vertex 
-    if row == (len(maze) -1) and column == (len(maze[0]) -1): ### Returns True when last vertex in maze is hit
+    if row == (len(graph) -1) and column == (len(graph[0]) -1): ### Returns True when last vertex in maze is hit
         return True
     
     marked_maze[row][column] = True # Shows program you have already been to this vertex
@@ -77,7 +77,7 @@ def dfs(graph, row, column): ### Row + Collumn representing the vertex
 
     
     for path in next_paths: ### Explores every path possible, but if there are no more vertixes to visit go back (recursivly) until you can visit one or if paths are depleted
-        draw_maze(maze, path[0], path[1])
+        draw_maze(graph, path[0], path[1])
         if dfs(graph, path[0], path[1]): ### IF last vertex is hit:
             #true_path.append([path[0], path[1]]) ### retrace paths back to start (not needed anymore though)
             return True
