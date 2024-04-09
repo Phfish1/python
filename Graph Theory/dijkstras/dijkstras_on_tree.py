@@ -26,7 +26,7 @@ def draw_maze(maze, row, column, path, fast):
             elif (row == i and column == j):
                 maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks current Vertex
             elif [i, j] in path:
-                if (i == len(maze)-1 and j == column):
+                if (i == len(maze)-1):
                     maze_string += f"\033[92m{maze[i][j]}\033[00m, "
                 else:
                     maze_string += f"\033[91m{maze[i][j]}\033[00m, " # Marks already visited vertexes, [IN current path] "See explored_paths.pop()" in dfs()
@@ -60,18 +60,27 @@ def find_neighbours(graph, row, column):
 
     return valid_paths
 
-def dijkstras(graph, row, column): ### Row + Collumn representing the vertex 
+def dijkstras(graph, row, column, shortest, draw, report): ### Row + Collumn representing the vertex 
     global current_cost
     global current_path
     global shortest_path
     
 
     if row == (len(graph) -1): ### Returns True when last vertex in maze is hit
-        if current_cost < shortest_path["cost"]: ### Change from "<" to ">" for highest cost
-            shortest_path["path"] = current_path.copy() ### Use copy, OR else shortest_path["path"] will be BOUND to the current_path
-            shortest_path["cost"] = current_cost
-            print("NEW: ", shortest_path)
-        return True
+        if shortest:
+            if current_cost < shortest_path["cost"]: ### Change from "<" to ">" for highest cost
+                shortest_path["path"] = current_path.copy() ### Use copy, OR else shortest_path["path"] will be BOUND to the current_path
+                shortest_path["cost"] = current_cost
+                if report:
+                    print("NEW: ", shortest_path)
+            return True
+        else:
+            if current_cost > shortest_path["cost"]: ### Change from "<" to ">" for highest cost
+                shortest_path["path"] = current_path.copy() ### Use copy, OR else shortest_path["path"] will be BOUND to the current_path
+                shortest_path["cost"] = current_cost
+                if report:
+                    print("NEW: ", shortest_path)
+            return True
     
     next_paths = find_neighbours(graph, row, column)
 
@@ -79,14 +88,14 @@ def dijkstras(graph, row, column): ### Row + Collumn representing the vertex
         current_path.append( [path[0], path[1]] )
         current_cost += graph[current_path[-1][0]][current_path[-1][1]]
 
+        if draw:
+            draw_maze(graph, path[0], path[1], current_path, True)
 
-        draw_maze(graph, path[0], path[1], current_path, True)
-
-        if current_cost > shortest_path["cost"]: ### Makes dijkstras Eager
+        if current_cost > shortest_path["cost"] and shortest: ### Makes dijkstras Eager BUT ONLY if the goal is the shortest path
             current_cost -= graph[current_path[-1][0]][current_path[-1][1]]
             current_path.pop()
         else:
-            if dijkstras(graph, path[0], path[1]): ### IF last vertex is hit:
+            if dijkstras(graph, path[0], path[1], shortest, draw, report): ### IF last vertex is hit:
                 current_cost -= graph[current_path[-1][0]][current_path[-1][1]]
                 current_path.pop()
 
@@ -99,23 +108,31 @@ def dijkstras(graph, row, column): ### Row + Collumn representing the vertex
     
 
 
-shortest_path = {
-    "path": [],
-    "cost": 9999999999 # Change to 0 for highest path
-}
 
 explored_paths = []
 current_path = []
 current_cost = matrix[0][0]
 
+do_shortest = True
+draw = True
+report = False
 
-result = dijkstras(matrix, 0, 0)
+if do_shortest:
+    shortest_path = {
+        "path": [],
+        "cost": float("inf") # Change to 0 for highest path
+    }
+elif not do_shortest:
+    shortest_path = {
+        "path": [],
+        "cost": 0 # Change to 0 for highest path
+    }
 
 
-#print(matrix[-1][-1])
-#print(result)
+result = dijkstras(matrix, 0, 0, do_shortest, draw, report)
+
+
 draw_maze(matrix, 0, 0, result["path"], False)
 print(result)
 
-### What more needs to change:
-### The find neighbours need to only return DOWN, DOWN-LEFT, DOWN-RIGHT.
+
