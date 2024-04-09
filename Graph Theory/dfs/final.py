@@ -79,29 +79,23 @@ def dfs(graph, row, column): ### Row + Collumn representing the vertex
     for path in next_paths: ### Explores every path possible, but if there are no more vertixes to visit go back (recursivly) until you can visit one or if paths are depleted
         draw_maze(maze, path[0], path[1])
         if dfs(graph, path[0], path[1]): ### IF last vertex is hit:
-            true_path.append([path[0], path[1]]) ### retrace paths back to start
-            return true_path
+            #true_path.append([path[0], path[1]]) ### retrace paths back to start (not needed anymore though)
+            return True
 
     try:
         explored_paths.pop()
     except:
-        pass
+        print("ERROR: no more paths to explore ;(")
     
     return False
 
 
-explored_paths = []
-true_path = []
+explored_paths = [] ### could be used to draw true_path after
+#true_path = [] ### true_path no longer needed,
 marked_maze = mark_vertexes(maze)
-true_path = dfs(maze, 0, 0)
 
 
-### Printing
-if true_path:
-    is_solvable = True
-else:
-   is_solvable = False
-
+is_solvable = dfs(maze, 0, 0)
 
 print(f"Is the MAZE solvable: \033[1m{is_solvable}\033[00m")
 print("------------------------------")
