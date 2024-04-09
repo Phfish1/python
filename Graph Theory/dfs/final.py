@@ -32,8 +32,8 @@ def draw_maze(maze, row, column):
         maze_string += f"\n"
     
     sleep(0.2)
-    print(f"\r{maze_string}")
-    print("------------------------------",)
+    print(f"{maze_string}", end='\r')
+    print("------------------------------", end="\n")
 
 def mark_vertexes(graph):
     marked_vertexes = []
