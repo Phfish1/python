@@ -42,7 +42,7 @@ def draw_maze(maze, row, column, path, realtime):
     
     if realtime:
         print(f"{maze_string}", end='\r')
-        sleep(0.000000001)
+        sleep(0.01)
         for line in maze_string.splitlines():
             print("\033[1A", end="\x1b[2K")
     else:
@@ -122,7 +122,7 @@ current_path = []
 current_cost = matrix[0][0]
 
 do_shortest = True
-draw = True
+draw = False
 report = True
 
 if do_shortest:
