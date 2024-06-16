@@ -1,52 +1,72 @@
-from collections import deque
+def draw_graph(nodeHierarchy):
+    # Convert nodeHierarchy list to a dictionary for easy lookup
+    node_dict = {node['name']: node for node in nodeHierarchy}
+    
+    # Create an adjacency list to keep track of parent-child relationships
+    adj_list = {node['name']: [] for node in nodeHierarchy}
+    for node in nodeHierarchy:
+        for child in nodeHierarchy:
+            if child['depth'] == node['depth'] + 1:
+                adj_list[node['name']].append(child['name'])
+    
+    def draw_node(node, depth):
+        # Draw the current node centered with respect to its depth
+        spacing = " " * (4 * depth)
+        print(f"{spacing}{node['name']}")
+        
+        # Recursively draw children nodes
+        for child_name in adj_list[node['name']]:
+            draw_node(node_dict[child_name], depth + 1)
 
-# Function to perform Breadth First Search on a graph
-# represented using adjacency list
-def bfs(adjList, startNode, visited):
-    # Create a queue for BFS
-    q = deque()
+    # Start drawing from the root node
+    root = next(node for node in nodeHierarchy if node['depth'] == 0)
+    draw_node(root, 0)
 
-    # Mark the current node as visited and enqueue it
-    visited[startNode] = True
-    q.append(startNode)
+# Example data
+nodeHierarchy = [
+    {
+        "name": "FirwWall-00",
+        "children": 2,
+        "totalChildren": 6,
+        "depth": 0
+    },
+    {
+        "name": "Switch-00",
+        "children": 3,
+        "totalChildren": 3,
+        "depth": 1
+    },
+    {
+        "name": "AP-01",
+        "children": 0,
+        "totalChildren": 0,
+        "depth": 2
+    },
+    {
+        "name": "AP-02",
+        "children": 0,
+        "totalChildren": 0,
+        "depth": 2
+    },
+    {
+        "name": "AP-03",
+        "children": 0,
+        "totalChildren": 0,
+        "depth": 2
+    },
+    {
+        "name": "Switch-01",
+        "children": 1,
+        "totalChildren": 1,
+        "depth": 1
+    },
+    {
+        "name": "AP-11",
+        "children": 0,
+        "totalChildren": 0,
+        "depth": 2
+    }
+]
 
-    # Iterate over the queue
-    while q:
-        # Dequeue a vertex from queue and print it
-        currentNode = q.popleft()
-        print(currentNode, end=" ")
-        print(visited[currentNode])
-
-        # Get all adjacent vertices of the dequeued vertex
-        # If an adjacent has not been visited, then mark it visited and enqueue it
-        for neighbor in adjList[currentNode]:
-            if not visited[neighbor]:
-                visited[neighbor] = True
-                q.append(neighbor)
-
-# Function to add an edge to the graph
-def addEdge(adjList, u, v):
-    adjList[u].append(v)
-
-def main():
-    # Number of vertices in the graph
-    vertices = 5
-
-    # Adjacency list representation of the graph
-    adjList = [[] for _ in range(vertices)]
-
-    # Add edges to the graph
-    addEdge(adjList, 0, 1)
-    addEdge(adjList, 0, 2)
-    addEdge(adjList, 1, 3)
-    addEdge(adjList, 1, 4)
-    addEdge(adjList, 2, 4)
-
-    # Mark all the vertices as not visited
-    visited = [False] * vertices
-
-    # Perform BFS traversal starting from vertex 0
-    bfs(adjList, 0, visited)
-
-if __name__ == "__main__":
-    main()
+# Draw the graph
+draw_graph(nodeHierarchy)
