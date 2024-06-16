@@ -43,6 +43,8 @@ def getNodeHierarchy(adj_list, nodeIndexMap):
 
         nodeHierarchy[node] = {
             "name": nodeIndexMap[node]['name'],
+            "parent": "",
+            "parentEdges": "",
             "children": children,
             "totalChildren": total_descendants, ### This will be HUGE LATER, if example website / graphic display
             "depth": depth  # If Depth == 0, then node Is Root
@@ -55,7 +57,7 @@ def getNodeHierarchy(adj_list, nodeIndexMap):
 
 
 def printNodeHierarchy(nodeHierarchy):
-    #print(json.dumps(nodeHierarchy, indent=4))
+    print(json.dumps(nodeHierarchy, indent=4))
 
     ### PROBLEM 1, Find out how to get which edge each node is connected to its parent from
 
@@ -66,11 +68,13 @@ def printNodeHierarchy(nodeHierarchy):
             print(f"{' '*node['depth']*5} \033[30;3mFrom\033[0m \033[4mG0/0\033[0m \033[30;3mto\033[0m \033[4mG0/1\033[0m \033[1m{node['name']}\033[0m")
 
 
-
-
 def main():
-    nodes = ["FirwWall-00", "Switch-00", "AP-01", "AP-02", "AP-03", "Switch-01", "AP-11"]
-    edges = [(0, 1), (1, 2), (1, 3), (1, 4), (0, 5), (5, 6)]
+    nodes = ["FirwWall-00", "Switch-00", "AP-01", "AP-02", "AP-03", "Switch-10", "AP-11", "AP12", "Switch-01"]
+    edges = [(0, 1), (1, 2), (1, 3), (1, 4), (0, 5), (5, 6), (5, 7), (1, 8)]
+    
+    ### Does not work because its asuming nodes will be in correct order
+    # Fix this by adding parents to nodeHierarchy
+    # Also add parentEdges to see which the edge which its connected to its parents
 
     nodeIndexMap = {}
 
